@@ -1,0 +1,24 @@
+.item {
+    display: flex;
+    align-items: center;
+    min-width: 0px;
+    border-radius: 12px;
+    margin: 2px;
+    box-sizing: border-box;
+    color: rgb(16, 34, 47);
+    border: 1px solid rgb(16, 34, 47);
+}
+
+.item-internal {
+    display: flex;
+    align-items: center;
+    gap: 5%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: rgb(16, 34, 47);
+    font-size: 12px;
+    padding: 5px 20px;
+    box-sizing: border-box;
+    line-height: 1.5;
+}
