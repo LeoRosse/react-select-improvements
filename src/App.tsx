@@ -36,6 +36,33 @@ const Components = {
       (el) => el.value === props.data.value
     );
 
+    const confirm = () => {
+      props.setValue(
+        [
+          ...arrayOfValues.slice(0, indexOfVal),
+          createOption(val || ""),
+          ...arrayOfValues.slice(indexOfVal + 1),
+        ],
+        "deselect-option"
+      );
+      setEdit(false);
+    };
+
+    const handle: KeyboardEventHandler = (event) => {
+      switch (event.key) {
+        case "ArrowUp":
+        case "ArrowDown":
+        case "ArrowLeft":
+        case "ArrowRight":
+        case "Backspace":
+          event.stopPropagation();
+          break;
+        case "Enter":
+          event.stopPropagation();
+          confirm();
+      }
+    };
+
     React.useEffect(() => {
       if (props.data.value) setVal(props.data.value);
     }, [props.data.value]);
@@ -57,19 +84,12 @@ const Components = {
                   e.preventDefault();
                   setVal(e.target.value);
                 }}
+                onKeyDown={handle}
               />{" "}
               <button onClick={() => setEdit(false)}>X</button>
               <button
                 onClick={() => {
-                  props.setValue(
-                    [
-                      ...arrayOfValues.slice(0, indexOfVal),
-                      createOption(val || ""),
-                      ...arrayOfValues.slice(indexOfVal + 1),
-                    ],
-                    "deselect-option"
-                  );
-                  setEdit(false);
+                  confirm();
                 }}
               >
                 ok
@@ -104,18 +124,20 @@ const App: React.FC = () => {
   };
 
   return (
-    <CreatableSelect
-      components={Components}
-      inputValue={inputValue}
-      isClearable
-      isMulti
-      menuIsOpen={false}
-      onChange={(newValue) => setValue(newValue)}
-      onInputChange={(newValue) => setInputValue(newValue)}
-      onKeyDown={handleKeyDown}
-      placeholder="Type something and press enter..."
-      value={value}
-    />
+    <div className="select-container">
+      <CreatableSelect
+        components={Components}
+        inputValue={inputValue}
+        isClearable
+        isMulti
+        menuIsOpen={false}
+        onChange={(newValue) => setValue(newValue)}
+        onInputChange={(newValue) => setInputValue(newValue)}
+        onKeyDown={handleKeyDown}
+        placeholder="Type something and press enter..."
+        value={value}
+      />
+    </div>
   );
 };
 
