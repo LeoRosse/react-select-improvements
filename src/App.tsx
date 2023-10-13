@@ -3,9 +3,10 @@ import {
   GroupBase,
   MultiValueProps,
   MultiValueRemoveProps,
+  Props,
 } from "react-select";
 
-import CreatableSelect from "react-select/creatable";
+import CreatableSelect, { CreatableProps } from "react-select/creatable";
 import "./App.css";
 
 const createOption = (label: string) => ({
@@ -27,7 +28,13 @@ const MultiValueRemove = <
 
 const Components = {
   DropdownIndicator: null,
-  MultiValue: (props: MultiValueProps<Option, true, GroupBase<Option>>) => {
+  MultiValue: (
+    props: MultiValueProps<Option, true, GroupBase<Option>> & {
+      selectProps: Props<Option, true, GroupBase<Option>> & {
+        isEditable?: boolean;
+      };
+    }
+  ) => {
     const [val, setVal] = React.useState<string>();
     const [edit, setEdit] = React.useState<boolean>(false);
     const arrayOfValues = props.getValue();
@@ -66,6 +73,13 @@ const Components = {
     React.useEffect(() => {
       if (props.data.value) setVal(props.data.value);
     }, [props.data.value]);
+
+    if (!props.selectProps.isEditable)
+      return (
+        <div className="item">
+          <div className="item-internal">{val}</div>
+        </div>
+      );
 
     return (
       <div className="item">
@@ -123,9 +137,17 @@ const App: React.FC = () => {
     }
   };
 
+  const EnrichedCreatableSelect = CreatableSelect as <
+    Option,
+    IsMulti extends boolean = false,
+    Group extends GroupBase<Option> = GroupBase<Option>
+  >(
+    props: CreatableProps<Option, IsMulti, Group> & { isEditable: boolean }
+  ) => JSX.Element;
+
   return (
     <div className="select-container">
-      <CreatableSelect
+      <EnrichedCreatableSelect
         components={Components}
         inputValue={inputValue}
         isClearable
@@ -136,6 +158,7 @@ const App: React.FC = () => {
         onKeyDown={handleKeyDown}
         placeholder="Type something and press enter..."
         value={value}
+        isEditable={true}
       />
     </div>
   );
